@@ -1,0 +1,53 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.sqlite3
+*.db
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+ENV/
+
+# --- Environment files ---
+.env
+*.env
+
+# --- Logs ---
+*.log
+logs/
+
+# --- IDEs / Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Byte-compiled / Cache ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+.pytest_cache/
+.cache/
+.mypy_cache/
+coverage/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Node.js (si tienes frontend en React dentro del repo) ---
+node_modules/
+build/
+dist/
+
+# --- Others ---
+*.bak
+*.tmp
+*.orig
