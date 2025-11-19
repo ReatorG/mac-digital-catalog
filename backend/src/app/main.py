@@ -4,6 +4,8 @@ from src.app.artist.application.artist_controller import router as artist_router
 from src.app.artwork.application.artwork_controller import router as artwork_router
 from src.app.config.settings import settings
 from src.app.database import _init_tables
+from src.app.comment.application.comment_controller import router as comment_router
+
 import psycopg
 
 def create_app() -> FastAPI:
@@ -83,6 +85,7 @@ def create_app() -> FastAPI:
     # ==============================
     app.include_router(artist_router, tags=["Artists"])
     app.include_router(artwork_router, tags=["Artworks"])
+    app.include_router(comment_router, tags=["Comments"])
 
     # ==============================
     # Root Endpoint

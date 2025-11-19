@@ -40,6 +40,17 @@ def _init_tables(conn):
         )
     """)
 
+    # Create comments table
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS comments (
+            id SERIAL PRIMARY KEY,
+            artwork_id INT REFERENCES artworks(id) ON DELETE CASCADE,
+            text TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+
+
     conn.commit()
     cur.close()
 
