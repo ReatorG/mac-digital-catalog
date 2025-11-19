@@ -4,8 +4,8 @@ uvicorn==0.37.0
 pydantic==2.11.9
 pydantic-settings==2.6.1
 
-# Database
-psycopg2-binary==2.9.9
+# Database (psycopg3)
+psycopg[binary]==3.2.2
 
 # Environment
 python-dotenv==1.1.1

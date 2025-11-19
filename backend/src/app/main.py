@@ -3,14 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.app.artist.application.artist_controller import router as artist_router
 from src.app.artwork.application.artwork_controller import router as artwork_router
 from src.app.config.settings import settings
-import psycopg2
-
+from src.app.database import _init_tables
+import psycopg
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Art Catalog API",
         version="1.0.0",
-        description="A simple digital catalog for artists and artworks.",
+        description="Catálogo digital para el MAC.",
         swagger_ui_parameters={"persistAuthorization": True},
         openapi_tags=[
             {"name": "Health", "description": "Service health check"},
@@ -31,18 +31,34 @@ def create_app() -> FastAPI:
     )
 
     # ==============================
+    # Startup event — create tables once
+    # ==============================
+    @app.on_event("startup")
+    def startup_event():
+        try:
+            conn = psycopg.connect(
+                host=settings.POSTGRES_HOST,
+                port=settings.POSTGRES_PORT,
+                dbname=settings.POSTGRES_DB,
+                user=settings.POSTGRES_USER,
+                password=settings.POSTGRES_PASSWORD,
+            )
+            _init_tables(conn)
+            conn.close()
+            print("Tables verified/created successfully.")
+        except Exception as e:
+            print(f"Error creating tables: {e}")
+
+    # ==============================
     # Health Check Endpoint
     # ==============================
     @app.get("/health", tags=["Health"])
     async def health_check():
-        """
-        Health check endpoint to verify the database connection.
-        """
         try:
-            conn = psycopg2.connect(
+            conn = psycopg.connect(
                 host=settings.POSTGRES_HOST,
                 port=settings.POSTGRES_PORT,
-                database=settings.POSTGRES_DB,
+                dbname=settings.POSTGRES_DB,
                 user=settings.POSTGRES_USER,
                 password=settings.POSTGRES_PASSWORD,
             )
@@ -65,8 +81,8 @@ def create_app() -> FastAPI:
     # ==============================
     # Include Routers
     # ==============================
-    app.include_router(artist_router, prefix="/api", tags=["Artists"])
-    app.include_router(artwork_router, prefix="/api", tags=["Artworks"])
+    app.include_router(artist_router, tags=["Artists"])
+    app.include_router(artwork_router, tags=["Artworks"])
 
     # ==============================
     # Root Endpoint
