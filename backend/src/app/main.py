@@ -18,6 +18,7 @@ def create_app() -> FastAPI:
             {"name": "Health", "description": "Service health check"},
             {"name": "Artists", "description": "Artist management endpoints"},
             {"name": "Artworks", "description": "Artwork management endpoints"},
+            {"name": "Comments", "description": "Comments management endpoints"},
         ],
     )
 
@@ -95,7 +96,7 @@ def create_app() -> FastAPI:
         return {
             "message": "Welcome to the Art Catalog API 👋",
             "docs_url": "/docs",
-            "endpoints": ["/api/artists", "/api/artworks"],
+            "endpoints": ["/api/artists", "/api/artworks", "/api/comments"],
         }
 
     return app
