@@ -11,7 +11,7 @@ class CreateArtworkRequest(BaseModel):
     year: Optional[int] = None
     technique: Optional[str] = None
     materials: Optional[str] = None
-    image_url: Optional[HttpUrl] = None
+    image_url: Optional[str] = None
     description: Optional[str] = None
     on_display: Optional[bool] = True
 
@@ -23,7 +23,7 @@ class UpdateArtworkRequest(BaseModel):
     year: Optional[int] = None
     technique: Optional[str] = None
     materials: Optional[str] = None
-    image_url: Optional[HttpUrl] = None
+    image_url: Optional[str] = None
     description: Optional[str] = None
     on_display: Optional[bool] = None
 
@@ -37,7 +37,7 @@ class ArtworkResponse(BaseModel):
     year: Optional[int]
     technique: Optional[str]
     materials: Optional[str]
-    image_url: Optional[HttpUrl]
+    image_url: Optional[str]
     description: Optional[str]
     on_display: bool
     created_at: datetime
