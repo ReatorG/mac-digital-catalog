@@ -1,4 +1,3 @@
-// app/components/CommentsSection.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -70,7 +69,7 @@ export default function CommentsSection({ artworkId }) {
           </div>
         ))}
         {comments.length === 0 && (
-          <p className="text-neutral-500 text-sm">Aún no hay comentarios.</p>
+          <p className="text-neutral-500 text-sm">¡Se el primero en comentar!</p>
         )}
       </div>
     </section>

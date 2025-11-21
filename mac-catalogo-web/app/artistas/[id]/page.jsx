@@ -1,4 +1,3 @@
-// app/artistas/[id]/page.jsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -6,9 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import {
   fetchArtistById,
   fetchArtworksByArtist,
-} from '../../lib/api';
-import ArtworkCard from '../../components/ArtworkCard';
-import CommentsSection from '../../components/CommentsSection';
+} from '../../../lib/api';
+import ArtworkCard from '../../../components/ArtworkCard';
+import CommentsSection from '../../../components/CommentsSection';
 
 export default function ArtistaDetallePage() {
   const params = useParams();
@@ -49,7 +48,6 @@ export default function ArtistaDetallePage() {
 
   return (
     <div className="w-full">
-      {/* Sección superior con foto redonda y biografía */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         <button
           onClick={() => router.push('/artistas')}
@@ -87,7 +85,6 @@ export default function ArtistaDetallePage() {
         </div>
       </section>
 
-      {/* Obras del artista */}
       <section className="bg-white border-t border-neutral-200 py-10 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-serif mb-6">

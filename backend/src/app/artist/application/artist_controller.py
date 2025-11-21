@@ -33,7 +33,7 @@ def create_artist(
 @router.get("/", response_model=ArtistListResponse)
 def list_artists(
     page: int = Query(1, ge=1, description="Número de página"),
-    page_size: int = Query(10, ge=1, le=100, description="Registros por página"),
+    page_size: int = Query(10, ge=1, description="Registros por página"),
     service: ArtistService = Depends(get_artist_service)
 ):
     """

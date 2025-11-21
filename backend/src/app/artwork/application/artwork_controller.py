@@ -25,22 +25,16 @@ def create_artwork(
     request: CreateArtworkRequest,
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    """
-    Crear una nueva obra de arte.
-    """
     artwork = service.create_artwork(request.model_dump())
     return ArtworkResponse.model_validate(artwork)
 
 
 @router.get("/", response_model=ArtworkListResponse)
 def list_artworks(
-    page: int = Query(1, ge=1, description="Número de página"),
-    page_size: int = Query(10, ge=1, le=100, description="Registros por página"),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100),
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    """
-    Listar todas las obras con paginación.
-    """
     artworks, total = service.get_all_artworks(page=page, page_size=page_size)
     return ArtworkListResponse(
         artworks=[ArtworkResponse.model_validate(a) for a in artworks],
@@ -50,28 +44,23 @@ def list_artworks(
     )
 
 
-@router.get("/{artwork_id}", response_model=ArtworkResponse)
-def get_artwork(
-    artwork_id: int,
-    service: ArtworkService = Depends(get_artwork_service)
-):
-    """
-    Obtener una obra de arte por ID.
-    """
-    artwork = service.get_artwork_by_id(artwork_id)
-    return ArtworkResponse.model_validate(artwork)
-
-
+# ⚠️ ESTE DEBE IR ANTES DEL GET /{id}
 @router.get("/artist/{artist_id}", response_model=list[ArtworkResponse])
 def get_artworks_by_artist(
     artist_id: int,
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    """
-    Listar todas las obras de un artista específico.
-    """
     artworks = service.get_artworks_by_artist(artist_id)
     return [ArtworkResponse.model_validate(a) for a in artworks]
+
+
+@router.get("/{artwork_id}", response_model=ArtworkResponse)
+def get_artwork(
+    artwork_id: int,
+    service: ArtworkService = Depends(get_artwork_service)
+):
+    artwork = service.get_artwork_by_id(artwork_id)
+    return ArtworkResponse.model_validate(artwork)
 
 
 @router.put("/{artwork_id}", response_model=ArtworkResponse)
@@ -80,9 +69,6 @@ def update_artwork(
     request: UpdateArtworkRequest,
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    """
-    Actualizar información de una obra de arte.
-    """
     updated = service.update_artwork(artwork_id, request.model_dump(exclude_unset=True))
     return ArtworkResponse.model_validate(updated)
 
@@ -92,7 +78,4 @@ def delete_artwork(
     artwork_id: int,
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    """
-    Eliminar una obra de arte.
-    """
     service.delete_artwork(artwork_id)

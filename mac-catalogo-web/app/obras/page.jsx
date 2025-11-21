@@ -1,92 +1,91 @@
-// app/obras/page.jsx
-'use client';
+"use client";
 
-import { useEffect, useState, useMemo } from 'react';
-import { fetchArtworks } from '../lib/api';
-import ArtworkCard from '../components/ArtworkCard';
-import SearchBar from '../components/SearchBar';
-import ArtworkFilterPanel from '../components/ArtworkFilterPanel';
+import { useEffect, useState, useRef } from "react";
+import "./obras.css";
 
 export default function ObrasPage() {
   const [artworks, setArtworks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [search, setSearch] = useState('');
-  const [filters, setFilters] = useState({
-    onDisplayOnly: false,
-    technique: null,
-    materials: null,
-    location: null,
-  });
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const loaderRef = useRef(null);
+
+  async function loadArtworks(p) {
+    setLoading(true);
+
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/artworks/?page=${p}&page_size=6`
+      );
+      const data = await res.json();
+
+      const items = data.items ?? data.artworks ?? [];
+
+      setArtworks((prev) => [...prev, ...items]);
+
+      if (items.length < 6) {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error("Error loading artworks:", err);
+    }
+
+    setLoading(false);
+  }
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchArtworks({ page: 1, page_size: 200 });
-        setArtworks(data.artworks || []);
-        setError(null);
-      } catch (e) {
-        console.error(e);
-        setError('No se pudieron cargar las obras.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, []);
+    loadArtworks(page);
+  }, [page]);
 
-  const filtered = useMemo(() => {
-    return artworks.filter((a) => {
-      // search por título o artista
-      const term = search.toLowerCase();
-      if (term) {
-        const artistName = `${a.artist_name || ''} ${a.artist_surname || ''}`;
-        const matchTitle = a.title?.toLowerCase().includes(term);
-        const matchArtist = artistName.toLowerCase().includes(term);
-        if (!matchTitle && !matchArtist) return false;
-      }
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          setPage((p) => p + 1);
+        }
+      },
+      { threshold: 1 }
+    );
 
-      if (filters.onDisplayOnly && !a.on_display) return false;
-      if (filters.technique && a.technique !== filters.technique) return false;
-      if (filters.materials && a.materials !== filters.materials) return false;
-      if (filters.location && a.location !== filters.location) return false;
-
-      return true;
-    });
-  }, [artworks, search, filters]);
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-      <h1 className="text-3xl sm:text-4xl font-serif tracking-[0.25em] mb-8">
-        OBRAS
-      </h1>
+    <div className="obras-wrapper">
+      <h1 className="obras-title">OBRAS</h1>
 
-      {/* Buscador + filtros */}
-      <div className="mb-6">
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder="Buscar obra o artista..."
-        />
+      <div className="obras-grid">
+        {artworks.map((a) => (
+          <div className="art-card" key={a.id}>
+            <div className="art-img-wrapper">
+              <img
+                src={a.image_url || "/placeholder.png"}
+                alt={a.title}
+                className="art-img"
+                onError={(e) => (e.target.src = "/placeholder.png")}
+              />
+            </div>
+
+            <h3 className="art-title">{a.title || "Sin título"}</h3>
+
+            <p className="art-meta">
+              {a.artist_name} {a.artist_surname} — {a.year || "Año desconocido"}
+            </p>
+          </div>
+        ))}
       </div>
 
-      <ArtworkFilterPanel
-        artworks={artworks}
-        filters={filters}
-        onChangeFilters={setFilters}
-      />
-
-      {loading && <p>Cargando obras...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-
-      {!loading && !error && (
-        <div className="mt-4 grid gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
-          {filtered.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
-          ))}
+      {loading && (
+        <div className="loader">
+          <span className="dot d1"></span>
+          <span className="dot d2"></span>
+          <span className="dot d3"></span>
         </div>
       )}
+
+      <div ref={loaderRef} />
     </div>
   );
 }

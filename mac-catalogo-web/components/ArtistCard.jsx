@@ -1,4 +1,3 @@
-// app/components/ArtistCard.jsx
 import Link from 'next/link';
 
 export default function ArtistCard({ artist }) {

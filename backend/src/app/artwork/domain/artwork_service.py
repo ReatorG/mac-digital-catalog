@@ -58,3 +58,11 @@ class ArtworkService:
     def delete_artwork(self, artwork_id: int):
         self.get_artwork_by_id(artwork_id)
         return self.repository.delete_artwork(artwork_id)
+
+    def get_all_artworks(self, page: int = 1, page_size: int = 10):
+        skip = (page - 1) * page_size
+        artworks = self.repository.get_all_artworks(skip=skip, limit=page_size)
+
+        total = self.repository.count_artworks()
+
+        return artworks, total

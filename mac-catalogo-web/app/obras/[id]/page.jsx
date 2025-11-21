@@ -1,10 +1,9 @@
-// app/obras/[id]/page.jsx
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetchArtworkById } from '../../lib/api';
-import CommentsSection from '../../components/CommentsSection';
+import { fetchArtworkById } from '../../../lib/api';
+import CommentsSection from '../../../components/CommentsSection';
 
 export default function ObraDetallePage() {
   const params = useParams();
@@ -45,7 +44,6 @@ export default function ObraDetallePage() {
 
   return (
     <div className="w-full">
-      {/* Hero con imagen fija y botón regresar */}
       <section
         className="relative h-[70vh] sm:h-screen text-white overflow-hidden"
         style={{
@@ -80,7 +78,6 @@ export default function ObraDetallePage() {
         </div>
       </section>
 
-      {/* Descripción sobre fondo semi-transparente (imitando tu img 3) */}
       <section className="bg-cover bg-center bg-fixed text-white relative py-16 px-4 sm:px-6"
         style={{
           backgroundImage: `url(${artwork.image_url || ''})`,
@@ -95,10 +92,8 @@ export default function ObraDetallePage() {
         </div>
       </section>
 
-      {/* Sección blanca de datos técnicos + comentarios */}
       <section className="bg-white py-14 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto grid gap-8 lg:grid-cols-[1.3fr,1fr]">
-          {/* Datos técnicos */}
           <div>
             <h2 className="text-2xl font-serif mb-6">Datos Técnicos</h2>
             <div className="border border-neutral-300 p-5 text-sm leading-relaxed">
@@ -135,7 +130,6 @@ export default function ObraDetallePage() {
             </div>
           </div>
 
-          {/* Mini galería lateral */}
           <div className="flex flex-col items-center gap-4">
             <div className="w-40 h-40 sm:w-52 sm:h-52 bg-neutral-100 overflow-hidden shadow-sm">
               {artwork.image_url && (
@@ -158,19 +152,8 @@ export default function ObraDetallePage() {
           </div>
         </div>
 
-        <CommentsSection
-          initialComments={[
-            {
-              id: 1,
-              text: 'Interesante pintura! Realmente marcó la historia.',
-            },
-            {
-              id: 2,
-              text:
-                'No entendí muy bien la pintura, pero la información adjunta me ayudó mucho!',
-            },
-          ]}
-        />
+        <CommentsSection artworkId={artwork.id} />
+
       </section>
     </div>
   );

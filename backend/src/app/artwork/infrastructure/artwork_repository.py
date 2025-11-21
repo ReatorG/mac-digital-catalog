@@ -99,3 +99,10 @@ class ArtworkRepository:
         self.db.commit()
         cur.close()
         return {"deleted_id": artwork_id}
+
+    def count_artworks(self):
+        cur = self.db.cursor()
+        cur.execute("SELECT COUNT(*) FROM artworks")
+        total = cur.fetchone()['count']
+        cur.close()
+        return total

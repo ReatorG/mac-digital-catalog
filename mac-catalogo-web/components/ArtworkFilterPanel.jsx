@@ -1,4 +1,3 @@
-// app/components/ArtworkFilterPanel.jsx
 'use client';
 
 import { useState } from 'react';

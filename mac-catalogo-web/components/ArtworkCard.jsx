@@ -1,4 +1,3 @@
-// app/components/ArtworkCard.jsx
 import Link from 'next/link';
 
 export default function ArtworkCard({ artwork }) {

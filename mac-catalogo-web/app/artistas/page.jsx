@@ -1,10 +1,11 @@
-// app/artistas/page.jsx
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { fetchArtists } from '../lib/api';
-import ArtistCard from '../components/ArtistCard';
-import SearchBar from '../components/SearchBar';
+import { fetchArtists } from '../../lib/api';
+import ArtistCard from '../../components/ArtistCard';
+import SearchBar from '../../components/SearchBar';
+import { searchArtists } from "../../lib/api";
+
 
 export default function ArtistasPage() {
   const [artists, setArtists] = useState([]);
@@ -17,18 +18,28 @@ export default function ArtistasPage() {
     const load = async () => {
       try {
         setLoading(true);
-        const data = await fetchArtists({ page: 1, page_size: 200 });
-        setArtists(data.artists || []);
+
+        if (search.trim() !== "") {
+          const data = await searchArtists(search, 1, 10);
+          setArtists(data.artists || []);
+        } else {
+          const data = await fetchArtists({ page: 1, page_size: 10 });
+          setArtists(data.artists || []);
+        }
+
         setError(null);
       } catch (e) {
         console.error(e);
-        setError('No se pudieron cargar los artistas.');
+        setError("Error buscando artistas.");
       } finally {
         setLoading(false);
       }
     };
+
     load();
-  }, []);
+  }, [search]);
+
+
 
   const filtered = useMemo(() => {
     return artists.filter((a) => {

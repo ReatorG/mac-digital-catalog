@@ -1,67 +1,37 @@
-// app/components/Navbar.jsx
 'use client';
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-const navItems = [
-  { label: 'CONTEMPORÁNEO', href: '#' }, // placeholder
-  { label: 'OBRAS', href: '/obras' },
-  { label: 'ARTISTAS', href: '/artistas' },
-];
+import './navbar.css';
 
 export default function Navbar() {
-  const pathname = usePathname();
-
   return (
-    <header className="w-full border-b border-neutral-200 bg-neutral-900 text-white">
-      {/* Barra superior pequeña */}
-      <div className="text-xs text-center tracking-wide bg-neutral-800 py-1">
-        REGRESAR A MUSEO
-      </div>
+    <header className="navbar-container">
 
-      {/* Barra principal */}
-      <div className="flex items-center justify-between px-4 sm:px-10 py-3">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          {/* Pon tu svg en /public/assets/mac.svg */}
-          <img
-            src="/assets/mac.svg"
-            alt="MAC Lima"
-            className="h-10 w-auto"
-          />
-          <span className="hidden sm:inline text-xs uppercase tracking-[0.2em]">
-            Museo de Arte Contemporáneo
-          </span>
+      <div className="nav-top">
+        <div className="nav-top-left">
+          <Link href="https://maclima.pe/">REGRESAR A MUSEO</Link>
         </div>
 
-        {/* Navegación */}
-        <nav className="flex items-center gap-6 text-xs sm:text-sm uppercase tracking-[0.25em]">
-          {navItems.map((item) => {
-            const isActive =
-              item.href !== '#' && pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.label}
-                href={item.href === '#' ? '/obras' : item.href}
-                className={`pb-1 border-b-2 ${
-                  isActive ? 'border-white' : 'border-transparent'
-                } hover:border-white/80 transition-colors`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+        <div className="nav-top-right">
+          <Link href="https://www.facebook.com/museomaclima/"><i className="fab fa-facebook-f" /></Link>
+          <Link href="https://www.instagram.com/museo_maclima/"><i className="fab fa-instagram" /></Link>
+          <Link href="https://www.tiktok.com/@museo.mac.lima"><i className="fab fa-tiktok" /></Link>
+          <Link href="https://www.linkedin.com/company/mac-lima/"><i className="fab fa-linkedin-in" /></Link>
+        </div>
+      </div>
+
+      <div className="nav-middle">
+
+        <div className="nav-logo-container">
+          <img src="/assets/mac.png" alt="MAC Lima" className="nav-logo" />
+        </div>
+
+        <nav className="nav-menu">
+          <Link href="/obras">OBRAS</Link>
+          <Link href="/artistas">ARTISTAS</Link>
         </nav>
 
-        {/* Redes placeholder */}
-        <div className="hidden md:flex gap-3 text-xs">
-          <span>f</span>
-          <span>i</span>
-          <span>t</span>
-          <span>▶</span>
-        </div>
       </div>
+
     </header>
   );
 }

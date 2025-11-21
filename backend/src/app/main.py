@@ -5,6 +5,7 @@ from src.app.artwork.application.artwork_controller import router as artwork_rou
 from src.app.config.settings import settings
 from src.app.database import _init_tables
 from src.app.comment.application.comment_controller import router as comment_router
+from src.app.search.application.search_controller import router as search_router
 
 import psycopg
 
@@ -19,6 +20,7 @@ def create_app() -> FastAPI:
             {"name": "Artists", "description": "Artist management endpoints"},
             {"name": "Artworks", "description": "Artwork management endpoints"},
             {"name": "Comments", "description": "Comments management endpoints"},
+            {"name": "Search", "description": "Search management endpoints"},
         ],
     )
 
@@ -87,6 +89,7 @@ def create_app() -> FastAPI:
     app.include_router(artist_router, tags=["Artists"])
     app.include_router(artwork_router, tags=["Artworks"])
     app.include_router(comment_router, tags=["Comments"])
+    app.include_router(search_router, tags=["Search"])
 
     # ==============================
     # Root Endpoint
@@ -96,7 +99,7 @@ def create_app() -> FastAPI:
         return {
             "message": "Welcome to the Art Catalog API 👋",
             "docs_url": "/docs",
-            "endpoints": ["/api/artists", "/api/artworks", "/api/comments"],
+            "endpoints": ["/api/artists", "/api/artworks", "/api/comments", "api/search"],
         }
 
     return app
