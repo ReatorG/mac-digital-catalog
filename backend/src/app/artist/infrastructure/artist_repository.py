@@ -7,6 +7,9 @@ class ArtistRepository:
     def __init__(self, db_conn):
         self.db = db_conn
 
+    # ====================================
+    # CREATE
+    # ====================================
     def create_artist(
         self,
         name: str,
@@ -19,11 +22,12 @@ class ArtistRepository:
     ) -> Dict[str, Any]:
 
         cur = self.db.cursor()
+
         cur.execute(
             """
             INSERT INTO artists
             (name, surname, birth_date, image_url, gender, biography, active_artworks, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())
             RETURNING id
             """,
             (
@@ -33,24 +37,30 @@ class ArtistRepository:
                 image_url,
                 gender,
                 biography,
-                active_artworks,
-                datetime.now()
+                active_artworks
             )
         )
 
+        row = cur.fetchone()   # dict_row → {"id": X}
         self.db.commit()
-        artist_id = cur.fetchone()[0]
         cur.close()
 
+        artist_id = row["id"]
         return self.get_artist_by_id(artist_id)
 
+    # ====================================
+    # GET BY ID
+    # ====================================
     def get_artist_by_id(self, artist_id: int) -> Optional[Dict[str, Any]]:
         cur = self.db.cursor()
         cur.execute("SELECT * FROM artists WHERE id = %s", (artist_id,))
         row = cur.fetchone()
         cur.close()
-        return dict(row) if row else None
+        return row if row else None   # row YA es dict
 
+    # ====================================
+    # GET ALL
+    # ====================================
     def get_all_artists(self, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
         cur = self.db.cursor()
         cur.execute(
@@ -59,8 +69,11 @@ class ArtistRepository:
         )
         rows = cur.fetchall()
         cur.close()
-        return [dict(r) for r in rows]
+        return rows   # rows YA es List[Dict]
 
+    # ====================================
+    # UPDATE
+    # ====================================
     def update_artist(self, artist_id: int, **kwargs) -> Optional[Dict[str, Any]]:
         cur = self.db.cursor()
 
@@ -86,6 +99,9 @@ class ArtistRepository:
         cur.close()
         return self.get_artist_by_id(artist_id)
 
+    # ====================================
+    # DELETE
+    # ====================================
     def delete_artist(self, artist_id: int):
         cur = self.db.cursor()
         cur.execute("DELETE FROM artists WHERE id = %s", (artist_id,))

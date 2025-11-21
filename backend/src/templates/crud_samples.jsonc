@@ -1,0 +1,69 @@
+{
+  // =====================================================
+  // ARTISTS CRUD — JSON Templates for Postman
+  // =====================================================
+
+  "artist_create": {
+    "name": "Pablo",
+    "surname": "Picasso",
+    "birth_date": "1881-10-25T00:00:00",
+    "image_url": "https://example.com/picasso.jpg",
+    "gender": "male",
+    "biography": "Spanish painter, sculptor, printmaker.",
+    "active_artworks": true
+  },
+
+  "artist_update": {
+    "name": "Pablo",
+    "surname": "Picasso Updated",
+    "birth_date": "1881-10-25T00:00:00",
+    "image_url": "https://example.com/picasso-new.jpg",
+    "gender": "male",
+    "biography": "Updated biography",
+    "active_artworks": true
+  },
+
+  // =====================================================
+  // ARTWORKS CRUD — JSON Templates for Postman
+  // =====================================================
+
+  "artwork_create": {
+    "artist_id": 1,
+    "title": "Guernica",
+    "series": "War Series",
+    "year": 1937,
+    "technique": "Oil on canvas",
+    "materials": "Oil paint",
+    "location": "Museo Reina Sofía",
+    "image_url": "https://example.com/guernica.jpg",
+    "description": "One of the most moving anti-war paintings in history.",
+    "on_display": true
+  },
+
+  "artwork_update": {
+    "artist_id": 1,
+    "title": "Guernica (Restored)",
+    "series": "War Series",
+    "year": 1937,
+    "technique": "Oil on canvas",
+    "materials": "Mixed media",
+    "location": "Museo Reina Sofía",
+    "image_url": "https://example.com/guernica-updated.jpg",
+    "description": "Restored version of the classic work.",
+    "on_display": false
+  },
+
+  // =====================================================
+  // COMMENTS CRUD — JSON Templates for Postman
+  // =====================================================
+
+  "comment_create": {
+    "artwork_id": 1,
+    "text": "This artwork is absolutely incredible, the detail is amazing!"
+  },
+
+  "comment_create_short": {
+    "artwork_id": 1,
+    "text": "Nice!"
+  }
+}
