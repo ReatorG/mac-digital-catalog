@@ -47,6 +47,7 @@
 }
 
 .nav-middle {
+  position: sticky;
   display: grid;
   grid-template-columns: 2fr 4fr 2fr;
   align-items: center;
@@ -54,6 +55,8 @@
   width: 100%;
   padding-bottom: 25px;
   padding-top: 25px;
+  top: 0;
+  z-index: 50;
 }
 
 .nav-logo-container {

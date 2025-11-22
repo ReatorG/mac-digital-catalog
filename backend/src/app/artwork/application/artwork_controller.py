@@ -33,9 +33,25 @@ def create_artwork(
 def list_artworks(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
+    query: str = Query("", description="Búsqueda por texto", alias="q"),
+    order: str = Query("", description="Ordenamiento"),
+    technique: list[str] = Query([], description="Filtrar por técnicas"),
+    materials: list[str] = Query([], description="Filtrar por materiales"),
+    location: list[str] = Query([], description="Filtrar por ubicaciones"),
+    on_display: Optional[bool] = Query(None, description="Solo obras en exhibición"),
     service: ArtworkService = Depends(get_artwork_service)
 ):
-    artworks, total = service.get_all_artworks(page=page, page_size=page_size)
+    artworks, total = service.filter_artworks(
+        page=page,
+        page_size=page_size,
+        query=query,
+        order=order,
+        technique=technique,
+        materials=materials,
+        location=location,
+        on_display=on_display,
+    )
+
     return ArtworkListResponse(
         artworks=[ArtworkResponse.model_validate(a) for a in artworks],
         total=total,
@@ -44,7 +60,6 @@ def list_artworks(
     )
 
 
-# ⚠️ ESTE DEBE IR ANTES DEL GET /{id}
 @router.get("/artist/{artist_id}", response_model=list[ArtworkResponse])
 def get_artworks_by_artist(
     artist_id: int,
@@ -79,3 +94,21 @@ def delete_artwork(
     service: ArtworkService = Depends(get_artwork_service)
 ):
     service.delete_artwork(artwork_id)
+
+@router.get("/filters")
+def get_filters(service: ArtworkService = Depends(get_artwork_service)):
+    return service.get_all_filter_options()
+
+@router.get("/filter-options")
+def get_filter_options(db=Depends(get_db)):
+    cur = db.cursor()
+
+    def fetch_distinct(column):
+        cur.execute(f"SELECT DISTINCT {column} FROM artworks WHERE {column} IS NOT NULL ORDER BY {column}")
+        return [row[column] for row in cur.fetchall()]
+
+    return {
+        "locations": fetch_distinct("location"),
+        "materials": fetch_distinct("materials"),
+        "techniques": fetch_distinct("technique")
+    }

@@ -1,0 +1,61 @@
+.filter-box {
+  width: 240px;
+  padding: 25px 15px;
+  border-right: 1px solid #eaeaea;
+  font-family: 'Heebo', sans-serif;
+}
+
+.filter-title {
+  font-family: 'Georgia', serif;
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+}
+
+.filter-group {
+  margin-bottom: 25px;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-group select:hover {
+  border-color: #999;
+}
+
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.clear-button {
+  width: 100%;
+  padding: 10px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background: #333;
+}

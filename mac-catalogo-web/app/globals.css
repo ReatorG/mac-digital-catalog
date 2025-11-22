@@ -30,3 +30,13 @@ html, body {
 * {
   box-sizing: border-box;
 }
+
+a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+a:hover {
+  color: #777 !important;
+}
+

@@ -146,3 +146,109 @@ class ArtworkRepository:
         total = cur.fetchone()['count']
         cur.close()
         return total
+
+    def filter_artworks(self, query, order, technique, materials, location, on_display, skip, limit):
+        cur = self.db.cursor()
+
+        sql = """
+            SELECT a.*, ar.name AS artist_name, ar.surname AS artist_surname
+            FROM artworks a
+            LEFT JOIN artists ar ON a.artist_id = ar.id
+            WHERE 1=1
+        """
+
+        params = []
+
+        if query:
+            sql += " AND (LOWER(a.title) LIKE LOWER(%s) OR LOWER(ar.name) LIKE LOWER(%s) OR LOWER(ar.surname) LIKE LOWER(%s))"
+            like = f"%{query}%"
+            params += [like, like, like]
+
+        if technique:
+            sql += " AND LOWER(a.technique) IN %s"
+            params.append(tuple(t.lower() for t in technique))
+
+        if materials:
+            sql += " AND LOWER(a.materials) IN %s"
+            params.append(tuple(m.lower() for m in materials))
+
+        if location:
+            sql += " AND LOWER(a.location) IN %s"
+            params.append(tuple(l.lower() for l in location))
+
+
+        if on_display is not None:
+            sql += " AND a.on_display = %s"
+            params.append(on_display)
+
+        # Ordenamiento
+        order_map = {
+            "title_asc": "a.title ASC",
+            "title_desc": "a.title DESC",
+            "year_asc": "a.year ASC NULLS LAST",
+            "year_desc": "a.year DESC NULLS LAST",
+        }
+        if order in order_map:
+            sql += " ORDER BY " + order_map[order]
+        else:
+            sql += " ORDER BY a.id"
+
+        sql += " LIMIT %s OFFSET %s"
+        params += [limit, skip]
+
+        cur.execute(sql, params)
+        rows = cur.fetchall()
+        cur.close()
+        return rows
+
+    def count_filtered_artworks(self, query, technique, materials, location, on_display):
+        cur = self.db.cursor()
+
+        sql = "SELECT COUNT(*) FROM artworks a LEFT JOIN artists ar ON a.artist_id = ar.id WHERE 1=1"
+        params = []
+
+        if query:
+            sql += " AND (LOWER(a.title) LIKE LOWER(%s) OR LOWER(ar.name) LIKE LOWER(%s) OR LOWER(ar.surname) LIKE LOWER(%s))"
+            like = f"%{query}%"
+            params += [like, like, like]
+
+        if technique:
+            sql += " AND LOWER(a.technique) LIKE LOWER(%s)"
+            params.append(f"%{technique}%")
+
+        if materials:
+            sql += " AND LOWER(a.materials) LIKE LOWER(%s)"
+            params.append(f"%{materials}%")
+
+        if location:
+            sql += " AND LOWER(a.location) LIKE LOWER(%s)"
+            params.append(f"%{location}%")
+
+        if on_display is not None:
+            sql += " AND a.on_display = %s"
+            params.append(on_display)
+
+        cur.execute(sql, params)
+        total = cur.fetchone()["count"]
+        cur.close()
+        return total
+
+    def get_filter_options(self):
+        cur = self.db.cursor()
+
+        cur.execute("SELECT DISTINCT location FROM artworks WHERE location IS NOT NULL")
+        locations = [r["location"] for r in cur.fetchall()]
+
+        cur.execute("SELECT DISTINCT materials FROM artworks WHERE materials IS NOT NULL")
+        materials = [r["materials"] for r in cur.fetchall()]
+
+        cur.execute("SELECT DISTINCT technique FROM artworks WHERE technique IS NOT NULL")
+        techniques = [r["technique"] for r in cur.fetchall()]
+
+        cur.close()
+
+        return {
+            "locations": locations,
+            "materials": materials,
+            "techniques": techniques
+        }

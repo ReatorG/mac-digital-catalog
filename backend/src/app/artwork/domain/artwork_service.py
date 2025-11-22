@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from src.app.artwork.infrastructure.artwork_repository import ArtworkRepository
 from src.app.artist.infrastructure.artist_repository import ArtistRepository
 
@@ -66,3 +66,40 @@ class ArtworkService:
         total = self.repository.count_artworks()
 
         return artworks, total
+
+    def filter_artworks(
+        self,
+        page: int,
+        page_size: int,
+        query: str,
+        order: str,
+        technique: list[str],
+        materials: list[str],
+        location: list[str],
+        on_display: Optional[bool],
+    ):
+        skip = (page - 1) * page_size
+        artworks = self.repository.filter_artworks(
+            query=query,
+            order=order,
+            technique=technique,
+            materials=materials,
+            location=location,
+            on_display=on_display,
+            skip=skip,
+            limit=page_size
+        )
+        total = self.repository.count_filtered_artworks(
+            query=query,
+            technique=technique,
+            materials=materials,
+            location=location,
+            on_display=on_display
+        )
+
+        return artworks, total
+
+    def get_filter_options(self):
+        return self.repository.get_filter_options()
+
+    

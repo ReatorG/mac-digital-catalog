@@ -1,0 +1,90 @@
+.searchbar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto 30px auto;
+  position: relative;
+}
+
+/* Botón Filtros */
+.filter-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  cursor: pointer;
+}
+
+.filter-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: auto;
+}
+
+.filter-icon span {
+  height: 2px;
+  background: #444;
+  border-radius: 4px;
+}
+
+.filter-icon span:nth-child(2) {
+  width: 70%;
+  align-self: flex-end;
+}
+
+.filter-icon span:nth-child(3) {
+  width: 50%;
+}
+
+/* Input */
+.searchbar-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.searchbar-input {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #dcdcdc;
+  padding: 12px 40px 12px 16px;
+  background: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.12);
+  outline: none;
+}
+
+.searchbar-icon {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #555;
+  border-radius: 50%;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.searchbar-icon::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 2px;
+  background: #555;
+  bottom: -4px;
+  right: -3px;
+  transform: rotate(45deg);
+}
+
+/* Panel contenedor */
+.filters-panel-container {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  z-index: 20;
+}
