@@ -1,0 +1,88 @@
+.mac-footer {
+  width: 100%;
+  background: white;
+  border-top: 1px solid #e6e6e6;
+  padding-top: 40px;
+  font-family: 'Heebo', sans-serif;
+  color: #333;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 50px;
+  padding: 0 40px 40px 40px;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.footer-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.footer-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  margin-top: 5px;
+}
+
+.logo-col {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.footer-col p {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.footer-note {
+  font-size: 12px;
+  color: #666;
+  margin-top: 8px;
+  line-height: 1.5;
+  width: 220px;
+}
+
+.libro-img {
+  margin-top: 15px;
+  width: 110px;
+}
+
+.social-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.social-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+  opacity: 1;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 12px;
+  color: #777;
+  border-top: 1px solid #e6e6e6;
+}
