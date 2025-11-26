@@ -228,17 +228,6 @@ export default function ArtistasPage() {
               <a href={`/artistas/${artist.id}`} className="artist-name hover-text">
                 {artist.name} {artist.surname}
               </a>
-
-              <p className="artist-meta">
-                {artist.gender && `${artist.gender} • `}
-                {formatBirthDate(artist.birth_date)}
-              </p>
-              
-              {artist.active_artworks && (
-                <p className="artist-active">
-                  Obras activas en el MAC
-                </p>
-              )}
             </div>
           ))}
         </div>

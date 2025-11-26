@@ -1,5 +1,5 @@
 import './globals.css';
-import Navbar from '../components/Navbar';
+import NavbarController from '../components/NavbarController';
 import Footer from '../components/Footer';
 
 export const metadata = {
@@ -21,8 +21,9 @@ export default function RootLayout({ children }) {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         />
       </head>
+
       <body className="min-h-screen bg-white text-neutral-900 flex flex-col m-0 p-0">
-        <Navbar />
+        <NavbarController />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

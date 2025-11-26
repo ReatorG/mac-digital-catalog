@@ -1,0 +1,308 @@
+/* ================= GENERAL ================= */ 
+.obra-page {
+  width: 100%;
+  background: #ffffff;
+  color: #111;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.obra-loading,
+.obra-error {
+  padding: 3rem;
+}
+
+/* ================= IMAGEN FIJA GLOBAL ================= */
+.obra-fixed-bg {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.07);
+  filter: brightness(0.92);
+  z-index: 0;
+}
+
+/* ================= HERO ================= */
+.obra-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 580px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  color: white;
+  z-index: 2;
+}
+
+.obra-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.30);
+  z-index: 1;
+}
+
+.obra-back-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 10;
+  padding: 0.5rem 1.7rem;
+  border-radius: 999px;
+  border: 1px solid #fff;
+  background: rgba(0,0,0,0.25);
+  color: white;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+}
+
+.obra-back-btn:hover {
+  background: rgba(0,0,0,0.45);
+}
+
+.obra-hero-text {
+  z-index: 2;
+  text-align: center;
+  padding-bottom: 4rem;
+}
+
+.obra-title {
+  font-size: 2.8rem;
+  font-family: "Times New Roman", serif;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.obra-subtitle {
+  font-size: 1rem;
+}
+
+/* ================= DESCRIPCIÓN ================= */
+.obra-description-section {
+  position: relative;
+  height: 100vh;
+  min-height: 580px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem;
+  color: white;
+  z-index: 3;
+}
+
+.obra-description-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 1; /* <-- CORRECCIÓN */
+}
+
+.obra-description-content {
+  z-index: 2; /* <-- IMPORTANTE PARA QUE SE VEA */
+  max-width: 760px;
+  text-align: center;
+  line-height: 1.9;
+  font-size: 1.2rem;
+
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1.1s ease, transform 1.1s ease; /* más smooth */
+}
+
+/* Cuando se vuelve visible */
+.obra-description-section.is-visible .obra-description-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ================= DETALLES ================= */
+.obra-details-section {
+  background: white;
+  position: relative;
+  z-index: 3;
+  padding: 4rem 4vw 3rem;
+}
+
+.obra-details-inner {
+  max-width: 1100px;
+  margin: 0 auto 3rem;
+  display: grid;
+  grid-template-columns: 3fr 2.4fr;
+  gap: 3rem;
+}
+
+.obra-tech-title {
+  font-family: "Times New Roman", serif;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.obra-tech-box {
+  border: 1px solid #d9d9d9;
+  padding: 2rem;
+  line-height: 1.9;
+}
+
+.obra-tech-label {
+  font-weight: 600;
+}
+
+.obra-tech-image img {
+  width: 100%;
+  display: block;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+}
+
+/* ================= COMENTARIOS BONITOS ================= */
+.obra-comments-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 1rem;
+  border-top: 1px solid #dedede;
+  background: white;
+  position: relative;
+  z-index: 3;
+}
+
+.comments-container {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+.comment-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.comment-form button {
+  padding: 0.75rem 1.5rem;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.comment-text {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .obra-title { font-size: 2.2rem; }
+  .obra-details-inner { grid-template-columns: 1fr; }
+}
+
+/* ---------- COMMENTS estilo artista ---------- */
+
+.obra-comments-section {
+  padding-top: 60px;
+  margin-top: 60px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.obra-comments-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 26px;
+  margin-bottom: 25px;
+}
+
+.obra-comments-input-wrapper {
+  width: 60%;
+  margin: 0 auto 40px;
+  display: flex;
+  gap: 12px;
+}
+
+.obra-comment-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.obra-comment-button {
+  padding: 12px 20px;
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.obra-comments-list {
+  width: 70%;
+  margin: auto;
+  text-align: left;
+}
+
+.obra-comment-item {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+}
+
+.obra-comment-icon {
+  font-size: 22px;
+}
+
+.obra-comment-item p {
+  margin: 0;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.obra-no-comments {
+  color: #777;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+footer, .footer {
+  position: relative;
+  z-index: 10;
+}

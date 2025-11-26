@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { fetchArtworkById } from '../../../lib/api';
 import CommentsSection from '../../../components/CommentsSection';
+import './obra.css';
 
 export default function ObraDetallePage() {
   const params = useParams();
@@ -15,7 +16,7 @@ export default function ObraDetallePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const load = async () => {
+    async function load() {
       try {
         setLoading(true);
         const data = await fetchArtworkById(id);
@@ -27,133 +28,123 @@ export default function ObraDetallePage() {
       } finally {
         setLoading(false);
       }
-    };
+    }
     if (id) load();
   }, [id]);
 
-  if (loading) return <div className="p-10">Cargando...</div>;
-  if (error) return <div className="p-10 text-red-600">{error}</div>;
-  if (!artwork) return <div className="p-10">No encontrada.</div>;
+  useEffect(() => {
+    const el = document.querySelector('.obra-description-section');
+    if (!el) return;
+
+    function onScroll() {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.6) {
+        el.classList.add('is-visible');
+      }
+    }
+
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  if (loading) return <div className="obra-loading">Cargando...</div>;
+  if (error) return <div className="obra-error">{error}</div>;
+  if (!artwork) return <div className="obra-error">Obra no encontrada.</div>;
 
   const artistName =
     artwork.artist_name && artwork.artist_surname
       ? `${artwork.artist_name} ${artwork.artist_surname}`
       : '';
+
   const year = artwork.year || '';
   const technique = artwork.technique || '';
+  const bgImage = artwork.image_url || '/cat.jpg';
 
   return (
-    <div className="w-full">
-      <section
-        className="relative h-[70vh] sm:h-screen text-white overflow-hidden"
-        style={{
-          backgroundImage: `url(${artwork.image_url || ''})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40" />
+    <div className="obra-page">
 
-        <div className="relative z-10 flex flex-col h-full">
-          <button
-            onClick={() => router.push('/obras')}
-            className="mt-6 ml-4 text-xs uppercase tracking-[0.2em]"
-          >
-            ← REGRESAR A CATÁLOGO
-          </button>
+      {/* IMAGEN FIJA REAL */}
+      <div
+        className="obra-fixed-bg"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      />
 
-          <div className="flex-1 flex items-end justify-center pb-16 px-4">
-            <div className="text-center max-w-2xl">
-              <h1 className="text-3xl sm:text-4xl font-serif mb-2">
-                {artwork.title}
-              </h1>
-              <p className="text-sm sm:text-base">
-                {artistName}
-                {technique && `  -  ${technique}`}
-                {year && `  -  ${year}`}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ================= HERO ================= */}
+      <section className="obra-hero">
+        <div className="obra-hero-overlay" />
 
-      <section className="bg-cover bg-center bg-fixed text-white relative py-16 px-4 sm:px-6"
-        style={{
-          backgroundImage: `url(${artwork.image_url || ''})`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="relative max-w-3xl mx-auto text-center leading-relaxed text-sm sm:text-base">
-          <p>
-            {artwork.description ||
-              'La descripción de esta obra aún no ha sido registrada en el sistema.'}
+        <button
+          onClick={() => router.push('/obras')}
+          className="obra-back-btn"
+        >
+          ← REGRESAR A CATÁLOGO
+        </button>
+
+        <div className="obra-hero-text">
+          <h1 className="obra-title">{artwork.title}</h1>
+
+          <p className="obra-subtitle">
+            {artistName && <span>{artistName}</span>}
+            {technique && <span> • {technique}</span>}
+            {year && <span> • {year}</span>}
           </p>
         </div>
       </section>
 
-      <section className="bg-white py-14 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto grid gap-8 lg:grid-cols-[1.3fr,1fr]">
-          <div>
-            <h2 className="text-2xl font-serif mb-6">Datos Técnicos</h2>
-            <div className="border border-neutral-300 p-5 text-sm leading-relaxed">
-              <p>
-                <span className="font-semibold">Título:</span> {artwork.title}
-              </p>
+      {/* ================= DESCRIPCIÓN ================= */}
+      <section className="obra-description-section">
+        <div className="obra-description-overlay" />
+
+        <div className="obra-description-content">
+          <p>
+            {artwork.description ||
+              'La descripción de esta obra aún no ha sido registrada.'}
+          </p>
+        </div>
+      </section>
+
+      {/* ================= DETALLES ================= */}
+      <section className="obra-details-section">
+        <div className="obra-details-inner">
+
+          <div className="obra-tech">
+            <h2 className="obra-tech-title">Datos Técnicos</h2>
+
+            <div className="obra-tech-box">
+              <p><span className="obra-tech-label">Título:</span> {artwork.title}</p>
               {artistName && (
-                <p>
-                  <span className="font-semibold">Autor:</span> {artistName}
-                </p>
+                <p><span className="obra-tech-label">Autor:</span> {artistName}</p>
               )}
               {year && (
-                <p>
-                  <span className="font-semibold">Año:</span> {year}
-                </p>
+                <p><span className="obra-tech-label">Año:</span> {year}</p>
               )}
               {technique && (
-                <p>
-                  <span className="font-semibold">Técnica:</span> {technique}
-                </p>
+                <p><span className="obra-tech-label">Técnica:</span> {technique}</p>
               )}
               {artwork.materials && (
-                <p>
-                  <span className="font-semibold">Materiales:</span>{' '}
-                  {artwork.materials}
-                </p>
+                <p><span className="obra-tech-label">Materiales:</span> {artwork.materials}</p>
               )}
               {artwork.location && (
-                <p>
-                  <span className="font-semibold">Ubicación actual:</span>{' '}
-                  {artwork.location}
-                </p>
+                <p><span className="obra-tech-label">Ubicación:</span> {artwork.location}</p>
               )}
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-40 h-40 sm:w-52 sm:h-52 bg-neutral-100 overflow-hidden shadow-sm">
-              {artwork.image_url && (
-                <img
-                  src={artwork.image_url}
-                  alt={artwork.title}
-                  className="h-full w-full object-cover"
-                />
-              )}
-            </div>
-            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-neutral-100 overflow-hidden shadow-sm">
-              {artwork.image_url && (
-                <img
-                  src={artwork.image_url}
-                  alt={artwork.title}
-                  className="h-full w-full object-cover"
-                />
-              )}
-            </div>
+          <div className="obra-tech-image">
+            <img src={bgImage} alt={artwork.title} />
           </div>
         </div>
 
-        <CommentsSection artworkId={artwork.id} />
-
+        {/* ====== COMENTARIOS ====== */}
+        <div className="obra-comments-wrapper">
+          <CommentsSection
+            artworkId={artwork.id}
+            initialComments={[
+              { id: 1, text: 'El cielo parece estar vivo, impresionante.' },
+              { id: 2, text: 'Una obra que transmite mucha emoción.' },
+            ]}
+          />
+        </div>
       </section>
     </div>
   );

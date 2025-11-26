@@ -33,45 +33,36 @@ export default function CommentsSection({ artworkId }) {
   };
 
   return (
-    <section className="mt-10 border-t border-neutral-200 pt-8">
-      <h2 className="text-xl font-serif mb-6">Comentarios</h2>
+    <section className="obra-comments-section">
 
-      <div className="mb-6">
-        <p className="text-center text-lg font-serif mb-3">
-          ¿Algún comentario?
-        </p>
-        <div className="max-w-xl mx-auto flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            placeholder="Comparte tu opinión..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="flex-1 border border-neutral-300 rounded-md py-2 px-3 shadow-sm"
-          />
-          <button
-            onClick={handleAdd}
-            className="px-4 py-2 rounded-md bg-neutral-900 text-white text-sm uppercase tracking-[0.15em]"
-          >
-            Enviar
-          </button>
-        </div>
+      <h3 className="obra-comments-title">¿Algún comentario?</h3>
+
+      <div className="obra-comments-input-wrapper">
+        <input
+          type="text"
+          placeholder="Comparte tu opinión..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="obra-comment-input"
+        />
+        <button onClick={handleAdd} className="obra-comment-button">
+          Enviar
+        </button>
       </div>
 
-      <div className="space-y-4 text-sm">
+      <div className="obra-comments-list">
         {comments.map((c) => (
-          <div key={c.id} className="flex gap-3 items-start">
-            <div className="mt-1">
-              <div className="w-7 h-7 border border-neutral-400 rounded-full flex items-center justify-center">
-                💬
-              </div>
-            </div>
-            <p className="border-b border-neutral-200 pb-2 flex-1">{c.text}</p>
+          <div key={c.id} className="obra-comment-item">
+            <span className="obra-comment-icon">💬</span>
+            <p>{c.text}</p>
           </div>
         ))}
+
         {comments.length === 0 && (
-          <p className="text-neutral-500 text-sm">¡Se el primero en comentar!</p>
+          <p className="obra-no-comments">¡Sé el primero en comentar!</p>
         )}
       </div>
+
     </section>
   );
 }
