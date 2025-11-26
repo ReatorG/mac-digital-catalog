@@ -29,6 +29,23 @@ export default function ObrasPage() {
     return out;
   }
 
+  function removeFilter(key, value = null) {
+    const updated = { ...filters };
+
+    // Si es lista (location, materials, technique)
+    if (value && Array.isArray(updated[key])) {
+      updated[key] = updated[key].filter(v => v !== value);
+      if (updated[key].length === 0) delete updated[key];
+    } else {
+      delete updated[key];
+    }
+
+    setFilters(updated);
+    setPage(1);
+    setArtworks([]);
+    loadArtworks(1, updated);
+  }
+
   /* ----------------------------
      LOAD ARTWORKS
   ---------------------------- */
@@ -156,7 +173,7 @@ export default function ObrasPage() {
                 ))
               : filters[key] ? (
                   <span className="filter-tag" key={key}>
-                    {filters[key]} <button onClick={() => update(key, "")}>×</button>
+                    {filters[key]} <button onClick={() => removeFilter(key)}>×</button>
                   </span>
                 ) : null
           )}
