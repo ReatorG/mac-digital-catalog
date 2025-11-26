@@ -165,17 +165,16 @@ class ArtworkRepository:
             params += [like, like, like]
 
         if technique:
-            sql += " AND LOWER(a.technique) IN %s"
-            params.append(tuple(t.lower() for t in technique))
+            sql += " AND LOWER(a.technique) = ANY(%s)"
+            params.append([t.lower() for t in technique])
 
         if materials:
-            sql += " AND LOWER(a.materials) IN %s"
-            params.append(tuple(m.lower() for m in materials))
+            sql += " AND LOWER(a.materials) = ANY(%s)"
+            params.append([m.lower() for m in materials])
 
         if location:
-            sql += " AND LOWER(a.location) IN %s"
-            params.append(tuple(l.lower() for l in location))
-
+            sql += " AND LOWER(a.location) = ANY(%s)"
+            params.append([l.lower() for l in location])
 
         if on_display is not None:
             sql += " AND a.on_display = %s"

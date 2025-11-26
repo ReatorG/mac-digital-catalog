@@ -127,7 +127,7 @@ export default function ObrasPage() {
 
   useEffect(() => {
     async function loadFilterOptions() {
-      const res = await fetch("http://127.0.0.1:8000/artworks/filter-options");
+      const res = await fetch("http://127.0.0.1:8000/artworks/filters");
       const data = await res.json();
       setFilterOptions(data);
     }
