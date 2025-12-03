@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./obras.css";
 import SearchBar from "../../components/SearchBar";
-import FiltersSideBar from "../../components/FiltersSidebar";
+import FiltersSideBar from "../../components/FiltersArtwork";
 
 export default function ObrasPage() {
   const [artworks, setArtworks] = useState([]);
@@ -15,9 +15,6 @@ export default function ObrasPage() {
 
   const loaderRef = useRef(null);
 
-  /* ----------------------------
-     CLEAN FILTERS
-  ---------------------------- */
   function cleanFilters(obj) {
     const out = {};
     for (const key in obj) {
@@ -32,7 +29,6 @@ export default function ObrasPage() {
   function removeFilter(key, value = null) {
     const updated = { ...filters };
 
-    // Si es lista (location, materials, technique)
     if (value && Array.isArray(updated[key])) {
       updated[key] = updated[key].filter(v => v !== value);
       if (updated[key].length === 0) delete updated[key];
@@ -46,9 +42,6 @@ export default function ObrasPage() {
     loadArtworks(1, updated);
   }
 
-  /* ----------------------------
-     LOAD ARTWORKS
-  ---------------------------- */
   async function loadArtworks(p, currentFilters = {}) {
     const cleaned = cleanFilters(currentFilters);
     setLoading(true);
@@ -61,12 +54,10 @@ export default function ObrasPage() {
     if (cleaned.query) queryParams.append("q", cleaned.query);
     if (cleaned.order) queryParams.append("order", cleaned.order);
 
-    // === FIX: enviar listas aunque solo haya 1 elemento ===
     if (cleaned.technique) queryParams.append("technique", cleaned.technique);
     if (cleaned.materials) queryParams.append("materials", cleaned.materials);
     if (cleaned.location) queryParams.append("location", cleaned.location);
 
-    // checkbox
     if (cleaned.on_display !== undefined) {
       queryParams.append("on_display", cleaned.on_display);
     }
@@ -93,17 +84,11 @@ export default function ObrasPage() {
     setLoading(false);
   }
 
-
-  /* ----------------------------
-     INITIAL + PAGINATION
-  ---------------------------- */
   useEffect(() => {
     loadArtworks(page, filters);
   }, [page]);
 
-  /* ----------------------------
-     INFINITE SCROLL
-  ---------------------------- */
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -118,9 +103,6 @@ export default function ObrasPage() {
     return () => observer.disconnect();
   }, [hasMore, loading]);
 
-  /* ----------------------------
-     SEARCH + FILTERS
-  ---------------------------- */
   function handleSearch(value) {
     setSearch(value);
     const updated = { ...filters, query: value };
@@ -152,10 +134,39 @@ export default function ObrasPage() {
   }, []);
 
   return (
-    <div className="page-layout">
+  <div className="page-layout">
 
-      {/* ---------------- Sidebar de filtros ---------------- */}
-      <aside className="filters-column">
+    <aside className="filters-column desktop-only">
+      <FiltersSideBar
+        filters={filters}
+        onChange={handleFilters}
+        onClear={() => handleFilters({})}
+        options={filterOptions}
+      />
+
+      <div className="active-filters">
+        {Object.keys(filters).map((key) =>
+          Array.isArray(filters[key])
+            ? filters[key].map((val) => (
+                <span className="filter-tag" key={key + val}>
+                  {val} <button onClick={() => removeFilter(key, val)}>×</button>
+                </span>
+              ))
+            : filters[key] ? (
+                <span className="filter-tag" key={key}>
+                  {filters[key]} <button onClick={() => removeFilter(key)}>×</button>
+                </span>
+              ) : null
+        )}
+      </div>
+    </aside>
+
+    <div className="content-column">
+      <h1 className="obras-title">OBRAS</h1>
+
+      <SearchBar value={search} onChange={handleSearch} />
+
+      <div className="filters-mobile-wrapper">
         <FiltersSideBar
           filters={filters}
           onChange={handleFilters}
@@ -168,7 +179,7 @@ export default function ObrasPage() {
             Array.isArray(filters[key])
               ? filters[key].map((val) => (
                   <span className="filter-tag" key={key + val}>
-                    {val} <button onClick={() => removeValue(key, val)}>×</button>
+                    {val} <button onClick={() => removeFilter(key, val)}>×</button>
                   </span>
                 ))
               : filters[key] ? (
@@ -178,54 +189,42 @@ export default function ObrasPage() {
                 ) : null
           )}
         </div>
-      </aside>
-
-      {/* ---------------- Contenido principal ---------------- */}
-      <div className="content-column">
-        <h1 className="obras-title">OBRAS</h1>
-
-        <SearchBar
-          value={search}
-          onChange={handleSearch}
-          onFiltersChange={handleFilters}
-        />
-
-        <div className="obras-grid">
-          {artworks.map((a) => (
-            <div className="art-card" key={a.id}>
-              <a href={`/obras/${a.id}`} className="art-img-wrapper">
-                <img
-                  src={a.image_url || "/cat.jpg"}
-                  alt={a.title}
-                  className="art-img"
-                  onError={(e) => (e.target.src = "/cat.jpg")}
-                />
-              </a>
-
-              <a href={`/obras/${a.id}`} className="art-title hover-text">
-                {a.title || "Sin título"}
-              </a>
-
-              <p className="art-meta">
-                <a href={`/artistas/${a.artist_id}`} className="hover-text">
-                  {a.artist_name} {a.artist_surname}
-                </a>{" "}
-                — {a.year || "Año desconocido"}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {loading && (
-          <div className="loader loader-center">
-            <span className="dot d1"></span>
-            <span className="dot d2"></span>
-            <span className="dot d3"></span>
-          </div>
-        )}
-
-        <div ref={loaderRef} />
       </div>
+
+      <div className="obras-grid">
+        {artworks.map((a) => (
+          <div className="art-card" key={a.id}>
+            <a href={`/obras/${a.id}`} className="art-img-wrapper">
+              <img
+                src={a.image_url || "/cat.jpg"}
+                alt={a.title}
+                className="art-img"
+              />
+            </a>
+            <a href={`/obras/${a.id}`} className="art-title hover-text">
+              {a.title || "Sin título"}
+            </a>
+            <p className="art-meta">
+              <a href={`/artistas/${a.artist_id}`} className="hover-text">
+                {a.artist_name} {a.artist_surname}
+              </a>{" "}
+              — {a.year || "Año desconocido"}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {loading && (
+        <div className="loader loader-center">
+          <span className="dot d1"></span>
+          <span className="dot d2"></span>
+          <span className="dot d3"></span>
+        </div>
+      )}
+
+      <div ref={loaderRef} />
     </div>
-  );
+
+  </div>
+);
 }

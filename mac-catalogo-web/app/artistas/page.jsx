@@ -15,9 +15,6 @@ export default function ArtistasPage() {
 
   const loaderRef = useRef(null);
 
-  /* ----------------------------
-     CLEAN FILTERS
-  ---------------------------- */
   function cleanFilters(obj) {
     const out = {};
     for (const key in obj) {
@@ -29,9 +26,6 @@ export default function ArtistasPage() {
     return out;
   }
 
-  /* ----------------------------
-     LOAD ARTISTS
-  ---------------------------- */
   async function loadArtists(p, currentFilters = {}) {
     const cleaned = cleanFilters(currentFilters);
     setLoading(true);
@@ -44,7 +38,6 @@ export default function ArtistasPage() {
     if (cleaned.query) queryParams.append("q", cleaned.query);
     if (cleaned.order) queryParams.append("order", cleaned.order);
 
-    // Filtros para artistas
     if (cleaned.gender) queryParams.append("gender", cleaned.gender);
     if (cleaned.birth_decade) queryParams.append("birth_decade", cleaned.birth_decade);
     if (cleaned.active_only !== undefined) {
@@ -73,16 +66,10 @@ export default function ArtistasPage() {
     setLoading(false);
   }
 
-  /* ----------------------------
-     INITIAL + PAGINATION
-  ---------------------------- */
   useEffect(() => {
     loadArtists(page, filters);
   }, [page]);
 
-  /* ----------------------------
-     INFINITE SCROLL
-  ---------------------------- */
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -97,9 +84,6 @@ export default function ArtistasPage() {
     return () => observer.disconnect();
   }, [hasMore, loading]);
 
-  /* ----------------------------
-     SEARCH + FILTERS
-  ---------------------------- */
   function handleSearch(value) {
     setSearch(value);
     const updated = { ...filters, query: value };
@@ -117,8 +101,8 @@ export default function ArtistasPage() {
   }
 
   const [filterOptions, setFilterOptions] = useState({
-    genders: ['Masculino', 'Femenino', 'No binario', 'Prefiero no decir'],
-    birth_decades: ['1950-1959', '1960-1969', '1970-1979', '1980-1989', '1990-1999', '2000-2009']
+    genders: [],
+    birth_decades: []
   });
 
   useEffect(() => {
@@ -130,9 +114,6 @@ export default function ArtistasPage() {
     loadFilterOptions();
   }, []);
 
-  /* ----------------------------
-     REMOVE FILTER
-  ---------------------------- */
   function removeFilter(key, value = null) {
     const updated = { ...filters };
     
@@ -146,20 +127,10 @@ export default function ArtistasPage() {
     handleFilters(updated);
   }
 
-  /* ----------------------------
-     FORMATO DE FECHA
-  ---------------------------- */
-  const formatBirthDate = (dateString) => {
-    if (!dateString) return 'Fecha desconocida';
-    const date = new Date(dateString);
-    return date.getFullYear();
-  };
-
   return (
     <div className="page-layout">
 
-      {/* ---------------- Sidebar de filtros ---------------- */}
-      <aside className="filters-column">
+      <aside className="filters-column desktop-only">
         <FiltersSideBar
           filters={filters}
           onChange={handleFilters}
@@ -168,11 +139,10 @@ export default function ArtistasPage() {
           type="artists"
         />
 
-        {/* Filtros activos */}
         <div className="active-filters">
           {Object.keys(filters).map((key) => {
             if (key === 'query') return null;
-            
+
             const value = filters[key];
             if (Array.isArray(value)) {
               return value.map((val) => (
@@ -180,30 +150,18 @@ export default function ArtistasPage() {
                   {val} <button onClick={() => removeFilter(key, val)}>×</button>
                 </span>
               ));
-            } else {
-              let displayValue = value;
-              if (key === 'active_only') displayValue = 'Artistas activos';
-              if (key === 'order') {
-                const orderLabels = {
-                  'name_asc': 'Orden: A-Z',
-                  'name_desc': 'Orden: Z-A',
-                  'birth_date_asc': 'Orden: Nacimiento ↑',
-                  'birth_date_desc': 'Orden: Nacimiento ↓'
-                };
-                displayValue = orderLabels[value] || value;
-              }
-              
-              return (
-                <span className="filter-tag" key={key}>
-                  {displayValue} <button onClick={() => removeFilter(key)}>×</button>
-                </span>
-              );
             }
+
+            return (
+              <span className="filter-tag" key={key}>
+                {value}
+                <button onClick={() => removeFilter(key)}>×</button>
+              </span>
+            );
           })}
         </div>
       </aside>
 
-      {/* ---------------- Contenido principal ---------------- */}
       <div className="content-column">
         <h1 className="artistas-title">ARTISTAS</h1>
 
@@ -212,6 +170,34 @@ export default function ArtistasPage() {
           onChange={handleSearch}
           placeholder="Buscar artista..."
         />
+
+        <div className="filters-mobile-wrapper">
+          <FiltersSideBar
+            filters={filters}
+            onChange={handleFilters}
+            onClear={() => handleFilters({})}
+            options={filterOptions}
+            type="artists"
+          />
+
+          <div className="active-filters">
+            {Object.keys(filters).map((key) =>
+              key !== "query" &&
+              (Array.isArray(filters[key])
+                ? filters[key].map((val) => (
+                    <span className="filter-tag" key={key + val}>
+                      {val} <button onClick={() => removeFilter(key, val)}>×</button>
+                    </span>
+                  ))
+                : filters[key] && (
+                    <span className="filter-tag" key={key}>
+                      {filters[key]}
+                      <button onClick={() => removeFilter(key)}>×</button>
+                    </span>
+                  ))
+            )}
+          </div>
+        </div>
 
         <div className="artistas-grid">
           {artists.map((artist) => (

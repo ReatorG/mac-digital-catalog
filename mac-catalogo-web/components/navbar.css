@@ -96,3 +96,24 @@
 .nav-menu a:hover {
   color: #FFFFFF;
 }
+
+/* ================= MOBILE NAV (solo ajustar spacing) ================= */
+@media (max-width: 768px) {
+
+  /* Mantener el layout original: logo | menú */
+  .nav-middle {
+    grid-template-columns: 2fr 4fr 2fr; /* igual que desktop */
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .nav-logo-container {
+    padding-right: 15px;   /* 🔥 menor separación entre logo y barra */
+  }
+
+  .nav-menu {
+    padding-left: 20px;    /* 🔥 antes era 50px, ahora mucho más centrado */
+    gap: 35px;             /* 🔥 antes 55px → ahora mejor balanceado */
+    font-size: 13px;
+  }
+}

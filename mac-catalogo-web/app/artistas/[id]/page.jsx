@@ -35,7 +35,15 @@ export default function ArtistaDetallePage() {
     if (id) load();
   }, [id]);
 
-  if (loading) return <div className="loading">Cargando...</div>;
+  if (loading)
+    return (
+      <div className="loader-center">
+        <span className="dot d1"></span>
+        <span className="dot d2"></span>
+        <span className="dot d3"></span>
+      </div>
+    );
+
   if (!artist) return <div className="loading">Artista no encontrado</div>;
 
   const name = `${artist.name} ${artist.surname}`;
@@ -43,12 +51,10 @@ export default function ArtistaDetallePage() {
   return (
     <div className="artist-page">
 
-      {/* --------- BOTÓN REGRESAR --------- */}
       <button onClick={() => router.push("/artistas")} className="back-button">
         ← REGRESAR A CATÁLOGO
       </button>
 
-      {/* --------- PERFIL DEL ARTISTA --------- */}
       <section className="artist-header">
         <div className="artist-photo">
           {artist.image_url ? (
@@ -58,16 +64,14 @@ export default function ArtistaDetallePage() {
           )}
         </div>
 
-        <div className="artist-info">
-          <h1 className="artist-name">{name}</h1>
-          <p className="artist-bio">
-            {artist.biography ??
-              "La biografía de este artista aún no ha sido registrada en el sistema."}
-          </p>
-        </div>
+        <h1 className="artist-name">{name}</h1>
+
+        <p className="artist-bio">
+          {artist.biography ??
+            "La biografía de este artista aún no ha sido registrada en el sistema."}
+        </p>
       </section>
 
-      {/* --------- OBRAS DEL ARTISTA --------- */}
       <section className="artist-works-section">
         <h2 className="works-title">Obras del Artista en MAC</h2>
 
@@ -76,18 +80,15 @@ export default function ArtistaDetallePage() {
         )}
 
         {artworks.length > 0 && (
-          <div className="works-grid">
+          <div className="works-grid mobile-two-cols">
             {artworks.map((a) => (
               <a key={a.id} href={`/obras/${a.id}`} className="work-card">
-                <img
-                  src={a.image_url}
-                  alt={a.title}
-                  className="work-img"
-                />
+                <img src={a.image_url} alt={a.title} className="work-img" />
                 <div className="work-info">
                   <p className="work-title">{a.title}</p>
                   <p className="work-meta">
-                    {artist.name} {artist.surname} — {a.year ?? "Año desconocido"}
+                    {artist.name} {artist.surname} —{" "}
+                    {a.year ?? "Año desconocido"}
                   </p>
                 </div>
               </a>
@@ -95,40 +96,6 @@ export default function ArtistaDetallePage() {
           </div>
         )}
       </section>
-
-      {/* --------- COMENTARIOS --------- */}
-      <section className="comments-section">
-        <h3 className="comments-title">¿Algún comentario?</h3>
-
-        <input
-          className="comment-input"
-          placeholder="Comparte tu opinión..."
-        />
-
-        <div className="comments-list">
-          <div className="comment-item">
-            <span className="comment-icon">💬</span>
-            <p>Interesante pintura! Realmente marcó la historia.</p>
-          </div>
-
-          <hr />
-
-          <div className="comment-item">
-            <span className="comment-icon">💬</span>
-            <p>
-              No entendí muy bien la pintura, pero la información adjunta me
-              ayudó mucho!
-            </p>
-          </div>
-        </div>
-
-        <button className="see-more">Ver más</button>
-      </section>
-
-      {/* --------- FOOTER --------- */}
-      <footer className="footer">
-        <p>MAC Lima © 2019 | All Rights Reserved</p>
-      </footer>
     </div>
   );
 }

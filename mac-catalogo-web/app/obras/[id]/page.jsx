@@ -16,6 +16,72 @@ export default function ObraDetallePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    function onScroll() {
+        const scrollY = window.scrollY;
+        const vh = window.innerHeight;
+
+        const hero = document.querySelector('.obra-hero-text');
+        const desc = document.querySelector('.obra-description-content');
+
+        if (!hero || !desc) return;
+
+        const heroFade = Math.min(1, scrollY / (vh * 0.5));
+        hero.style.opacity = `${1 - heroFade}`;
+
+        const heroOverlay = document.querySelector('.obra-hero-overlay');
+        if (heroOverlay) {
+          heroOverlay.style.opacity = `${1 - heroFade}`;
+        }
+        const descStart = vh * 0.9;
+        const descEnd   = vh * 2.3;
+
+        let descOpacity = 0;
+
+        if (scrollY < descStart) {
+          descOpacity = 0;
+        } else if (scrollY > descEnd) {
+          descOpacity = 0;
+        } else {
+          const full = descEnd - descStart;
+
+          const fadeIn = full * 0.25;
+
+          if (scrollY - descStart < fadeIn) {
+            descOpacity = (scrollY - descStart) / fadeIn;
+          }
+          else if (scrollY - descStart < full * 0.7) {
+            descOpacity = 1;
+          }
+          else {
+            const fadeOut = full * 0.3;
+            descOpacity = 1 - ((scrollY - descStart - full * 0.7) / fadeOut);
+          }
+        }
+
+
+
+        const descOverlay = document.querySelector('.obra-description-overlay');
+        if (descOverlay) {
+          descOverlay.style.opacity = descOpacity;
+        }
+
+        descOpacity = Math.max(0, Math.min(1, descOpacity));
+
+        if (descOverlay) {
+          descOverlay.style.opacity = descOpacity;
+        }
+
+        desc.style.opacity = descOpacity;
+      }
+    
+
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
     async function load() {
       try {
         setLoading(true);
@@ -32,22 +98,18 @@ export default function ObraDetallePage() {
     if (id) load();
   }, [id]);
 
-  useEffect(() => {
-    const el = document.querySelector('.obra-description-section');
-    if (!el) return;
+  if (loading) {
+    return (
+      <div className="obra-loader-wrapper">
+        <div className="loader">
+          <span className="dot d1"></span>
+          <span className="dot d2"></span>
+          <span className="dot d3"></span>
+        </div>
+      </div>
+    );
+  }
 
-    function onScroll() {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.6) {
-        el.classList.add('is-visible');
-      }
-    }
-
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  if (loading) return <div className="obra-loading">Cargando...</div>;
   if (error) return <div className="obra-error">{error}</div>;
   if (!artwork) return <div className="obra-error">Obra no encontrada.</div>;
 
@@ -62,14 +124,11 @@ export default function ObraDetallePage() {
 
   return (
     <div className="obra-page">
-
-      {/* IMAGEN FIJA REAL */}
       <div
         className="obra-fixed-bg"
         style={{ backgroundImage: `url(${bgImage})` }}
       />
 
-      {/* ================= HERO ================= */}
       <section className="obra-hero">
         <div className="obra-hero-overlay" />
 
@@ -88,13 +147,14 @@ export default function ObraDetallePage() {
             {technique && <span> • {technique}</span>}
             {year && <span> • {year}</span>}
           </p>
+
         </div>
       </section>
 
-      {/* ================= DESCRIPCIÓN ================= */}
+      <section className="obra-gap"></section>
+
       <section className="obra-description-section">
         <div className="obra-description-overlay" />
-
         <div className="obra-description-content">
           <p>
             {artwork.description ||
@@ -103,29 +163,49 @@ export default function ObraDetallePage() {
         </div>
       </section>
 
-      {/* ================= DETALLES ================= */}
+      <div className="obra-description-bottom-gap"></div>
+
       <section className="obra-details-section">
         <div className="obra-details-inner">
-
           <div className="obra-tech">
             <h2 className="obra-tech-title">Datos Técnicos</h2>
 
             <div className="obra-tech-box">
-              <p><span className="obra-tech-label">Título:</span> {artwork.title}</p>
+              <p>
+                <span className="obra-tech-label">Título:</span> {artwork.title}
+              </p>
               {artistName && (
-                <p><span className="obra-tech-label">Autor:</span> {artistName}</p>
+                <p>
+                  <span className="obra-tech-label">Autor:</span>{" "}
+                  <a
+                    href={`/artistas/${artwork.artist_id}`}
+                    className="obra-tech-artist-link"
+                  >
+                    {artistName}
+                  </a>
+                </p>
               )}
               {year && (
-                <p><span className="obra-tech-label">Año:</span> {year}</p>
+                <p>
+                  <span className="obra-tech-label">Año:</span> {year}
+                </p>
               )}
               {technique && (
-                <p><span className="obra-tech-label">Técnica:</span> {technique}</p>
+                <p>
+                  <span className="obra-tech-label">Técnica:</span> {technique}
+                </p>
               )}
               {artwork.materials && (
-                <p><span className="obra-tech-label">Materiales:</span> {artwork.materials}</p>
+                <p>
+                  <span className="obra-tech-label">Materiales:</span>{' '}
+                  {artwork.materials}
+                </p>
               )}
               {artwork.location && (
-                <p><span className="obra-tech-label">Ubicación:</span> {artwork.location}</p>
+                <p>
+                  <span className="obra-tech-label">Ubicación:</span>{' '}
+                  {artwork.location}
+                </p>
               )}
             </div>
           </div>
@@ -135,7 +215,6 @@ export default function ObraDetallePage() {
           </div>
         </div>
 
-        {/* ====== COMENTARIOS ====== */}
         <div className="obra-comments-wrapper">
           <CommentsSection
             artworkId={artwork.id}
@@ -149,3 +228,5 @@ export default function ObraDetallePage() {
     </div>
   );
 }
+
+

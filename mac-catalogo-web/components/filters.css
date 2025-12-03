@@ -59,3 +59,13 @@
 .clear-button:hover {
   background: #333;
 }
+
+
+/* ================= MOBILE FIX FOR FILTER SIDEBAR ================= */
+@media (max-width: 768px) {
+  .filter-box {
+    width: 100% !important;
+    border-right: none !important;
+    padding: 15px 0 !important;
+  }
+}
