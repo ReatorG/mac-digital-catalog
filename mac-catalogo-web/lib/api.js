@@ -1,7 +1,10 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://mac-digital-catalog.onrender.com/";
+const BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || "https://mac-digital-catalog.onrender.com").replace(/\/+$/, "");
 
 async function apiFetch(path, options = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const cleanPath = path.startsWith("/") ? path : "/" + path;
+  const url = BASE_URL + cleanPath;
+
+  const res = await fetch(url, {
     cache: "no-store",
     headers: { "Content-Type": "application/json" },
     ...options,
@@ -14,6 +17,7 @@ async function apiFetch(path, options = {}) {
 
   return res.json();
 }
+
 
 export async function fetchArtworks({ page = 1, page_size = 200 } = {}) {
   return apiFetch(`/artworks/?page=${page}&page_size=${page_size}`);
