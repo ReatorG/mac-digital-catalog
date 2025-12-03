@@ -18,9 +18,9 @@ export default function ArtistaDetallePage() {
       try {
         setLoading(true);
 
-        const artistRes = await fetch(`http://127.0.0.1:8000/artists/${id}`);
+        const artistRes = await fetch(`https://mac-digital-catalog.onrender.com/artists/${id}`);
         const artworksRes = await fetch(
-          `http://127.0.0.1:8000/artworks/artist/${id}`
+          `https://mac-digital-catalog.onrender.com/artworks/artist/${id}`
         );
 
         const artistData = await artistRes.json();

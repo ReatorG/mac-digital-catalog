@@ -45,7 +45,7 @@ export default function ArtistasPage() {
     }
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/artists/?${queryParams}`);
+      const res = await fetch(`https://mac-digital-catalog.onrender.com/artists/?${queryParams}`);
       const data = await res.json();
 
       const items = data.artists || [];
@@ -107,7 +107,7 @@ export default function ArtistasPage() {
 
   useEffect(() => {
     async function loadFilterOptions() {
-      const res = await fetch("http://127.0.0.1:8000/artists/filter-options");
+      const res = await fetch("https://mac-digital-catalog.onrender.com/artists/filter-options");
       const data = await res.json();
       setFilterOptions(data);
     }

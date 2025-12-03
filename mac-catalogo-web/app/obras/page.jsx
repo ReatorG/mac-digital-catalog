@@ -63,7 +63,7 @@ export default function ObrasPage() {
     }
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/artworks/?${queryParams}`);
+      const res = await fetch(`https://mac-digital-catalog.onrender.com/artworks/?${queryParams}`);
       const data = await res.json();
 
       const items = data.artworks || [];
@@ -126,7 +126,7 @@ export default function ObrasPage() {
 
   useEffect(() => {
     async function loadFilterOptions() {
-      const res = await fetch("http://127.0.0.1:8000/artworks/filters");
+      const res = await fetch("https://mac-digital-catalog.onrender.com/artworks/filters");
       const data = await res.json();
       setFilterOptions(data);
     }
