@@ -64,13 +64,16 @@ export default function ArtistaDetallePage() {
           )}
         </div>
 
-        <h1 className="artist-name">{name}</h1>
+        <div className="artist-text">
+          <h1 className="artist-name">{name}</h1>
 
-        <p className="artist-bio">
-          {artist.biography ??
-            "La biografía de este artista aún no ha sido registrada en el sistema."}
-        </p>
+          <p className="artist-bio">
+            {artist.biography ??
+              "La biografía de este artista aún no ha sido registrada en el sistema."}
+          </p>
+        </div>
       </section>
+
 
       <section className="artist-works-section">
         <h2 className="works-title">Obras del Artista en MAC</h2>
