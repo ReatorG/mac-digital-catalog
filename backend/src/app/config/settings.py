@@ -3,8 +3,12 @@ from pydantic import Field, field_validator
 from pathlib import Path
 from typing import Any
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent  # now points to mac/
+# ================================================
+# Paths
+# ================================================
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 ENV_FILE = BASE_DIR / ".env"
+
 
 class Settings(BaseSettings):
     # ================================
@@ -34,23 +38,33 @@ class Settings(BaseSettings):
     # ================================
     # Validators
     # ================================
-    @field_validator('POSTGRES_PORT', 'API_PORT', mode='before')
+    @field_validator("POSTGRES_PORT", "API_PORT", mode="before")
     @classmethod
     def validate_ports(cls, v: Any) -> int:
-        if v in ('', None):
+        if v in ("", None):
             return 5432
         try:
             return int(v)
         except ValueError:
             return 5432
 
-    @field_validator('DEBUG', mode='before')
+    @field_validator("DEBUG", mode="before")
     @classmethod
     def validate_debug(cls, v: Any) -> bool:
         if isinstance(v, str):
-            return v.lower() in ('true', '1', 'yes', 'on')
+            return v.lower() in ("true", "1", "yes", "on")
         return bool(v)
 
+    # ================================================
+    # Config → carga .env solo si existe
+    # ================================================
+    class Config:
+        env_file = ENV_FILE if ENV_FILE.exists() else None
+
+
+# ================================================
+# Debug prints
+# ================================================
 print("=== DEBUG SETTINGS PATHS ===")
 print("File:", __file__)
 print("Base dir:", BASE_DIR)
@@ -58,6 +72,7 @@ print("Env file absolute path:", ENV_FILE)
 print("Exists:", ENV_FILE.exists())
 print("=============================")
 
-
+# ================================================
 # Instantiate global settings object
-settings = Settings(_env_file=ENV_FILE)
+# ================================================
+settings = Settings()
